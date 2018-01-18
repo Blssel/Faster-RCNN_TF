@@ -121,3 +121,13 @@ The demo performs detection using a VGG16 network trained for detection on PASCA
 
 [A tensorflow implementation of SubCNN (working progress)](https://github.com/yuxng/SubCNN_TF)
 
+
+
+# yzy 记录应用过程
+## 用来辅助Action Recognition任务
+- 增加det_all_person.py用来检测出每一帧中所有可能的人物，并将对应的bounding box坐标保存在.json文件中（程序运行时json文件保存在程序运行路径，之后存到~/dataset下）。修改时需要修改FRAME_PATH和json的名字JSON_NAME. 运行该程序使用:
+```shell
+python ./tools/det_all_person.py --model ~/models/VGGnet_fast_rcnn_iter_70000.ckpt #models是笔者存放VGGnet_fast_rcnn_iter_70000.ckpt的路径
+```
+> 注：.json文件中每一帧的所有bounding box保存在一个二维数组中，数组的每一个元素表示一个boundingbox的坐标信息
+
