@@ -184,11 +184,11 @@ def main():
             # 保存json
             if num%50==1:
                 json.dump(video_level_dict,open(JSON_NAME,'w'))
-            json.dump(video_level_dict,open(JSON_NAME,'w'))
+                import gc;gc.collect()
+	        from guppy import hpy;hxx = hpy();heap = hxx.heap()
+                print(heap)
+                json.dump(video_level_dict,open(JSON_NAME,'w'))
 
-            import gc;gc.collect()
-	    from guppy import hpy;hxx = hpy();heap = hxx.heap()
-            print(heap)
     	#pool=threadpool.ThreadPool(50)
     	#requests=threadpool.makeRequests(vid_level_det,video_lists)
     	#[pool.putRequest(req) for req in requests]
