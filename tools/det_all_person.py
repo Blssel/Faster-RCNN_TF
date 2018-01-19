@@ -14,6 +14,7 @@ import threadpool
 import Queue
 import threading
 import time
+import json
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -40,9 +41,9 @@ def save_person_area(im,cls,dets,ax,image_name,video_name,thresh=0.5):
     # 如果帧中无人，则保存空列表
     '''
     bboxes=[] 
-    for i in bbox:
-        bbox=dets[0,:4].tolist()
-        bboxs.append(bbox)
+    for i in range(len(dets)):
+        bbox=dets[i,:4].tolist()
+        bboxes.append(bbox)
     return bboxes
 
 def demo(sess, net, image_name,video_name):
@@ -61,8 +62,8 @@ def demo(sess, net, image_name,video_name):
     # boxes 尺寸为(R,4*k)！
     scores, boxes = im_detect(sess, net, im)
     timer.toc()
-    print ('Detection took {:.3f}s for '
-            '{:d} object proposals').format(timer.total_time, boxes.shape[0])  # 例：Detection took 0.1s for 10 object proposals'
+    #print ('Detection took {:.3f}s for '
+    #        '{:d} object proposals').format(timer.total_time, boxes.shape[0])  # 例：Detection took 0.1s for 10 object proposals'
 
     # Visualize detections for each class
     im2=im
@@ -138,7 +139,7 @@ def main():
     saver = tf.train.Saver(write_version=tf.train.SaverDef.V1)
 
     # init session
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.1) #设置GPU占用率
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.3) #设置GPU占用率
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
 	sess.graph.finalize()
     	# load model
@@ -160,7 +161,8 @@ def main():
 
     	# 读入数据. 首先获得所有视频的list（每一条都对应一个视频的名称）
         video_lists=os.listdir(FRAME_PATH) #listdir这个函数只列出名字，没有路径
-
+        video_level_dict={}
+        num=0
     	# 路径获得该视频下所有RGB图片的路径并读取，然后存到别的地方
     	for video_name in video_lists:
             print video_name
@@ -177,7 +179,7 @@ def main():
             video_level_dict[video_name]=frame_level_bbox_dict
             
 	    num+=1
-            print num
+            print('%dth video completed'%num)
             
             # 保存json
             if num%50==1:
